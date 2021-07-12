@@ -6,12 +6,11 @@ if [ ! -f "/root/.config/rclone/rclone.conf" ]; then
 fi
 
 env | grep '^RCLONE_MOUNT_' | while IFS='=' read var mntdef; do
-  echo ${mntdef} | while IFS=' ' read remote mnt; do
-    set -x
-    mkdir -p ${mnt}
-    rclone mount --umask=7 --daemon ${remote} ${mnt} || exit 1
-    set +x
-  done || exit 1
+  set -x
+  mnt=$(echo ${mntdef} | awk '{print $NF}')
+  mkdir -p ${mnt}
+  rclone mount --umask=7 --daemon ${mntdef} || exit 1
+  set +x
 done || exit 1
 
 set -x && /usr/local/bin/entrypoint.sh $@
