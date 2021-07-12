@@ -1,0 +1,18 @@
+version: '3'
+services:
+  rclone-nfs:
+    build: .
+    image: maayanlab/rclone-nfs:latest
+    privileged: true
+    environment:
+      RCLONE_MOUNT_00: "rclone-profile-name:s3-bucket/path /data"
+      NFS_EXPORT_00: "/data *(rw,fsid=0,nohide,no_subtree_check,fsid=0,crossmnt)"
+    ports:
+      - 111:111
+      - 2049:2049
+      - 32765:32765
+      - 32767:32767
+    volumes:
+      - /lib/modules:/lib/modules:ro
+      # rclone.conf should be present in ./config
+      - ./config/:/root/.config/rclone/
